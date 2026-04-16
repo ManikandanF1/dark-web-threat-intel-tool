@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Threat Intelligence Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #0f172a;
+            color: white;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #38bdf8;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .left {
+            flex: 2;
+        }
+
+        .right {
+            flex: 1;
+        }
+
+        canvas {
+            background: #1e293b;
+            padding: 10px;
+            border-radius: 10px;
+            max-height: 300px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            background-color: #1e293b;
+        }
+
+        tr:hover {
+            background-color: #1e293b;
+        }
+
+        input {
+            padding: 10px;
+            width: 300px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .alert { color: red; font-weight: bold; }
+        .malicious_url { color: orange; }
+        .email { color: lightgreen; }
+
+    </style>
+
+    <script>
+        setTimeout(() => {
+            location.reload();
+        }, 10000);
+    </script>
+
+</head>
+<body>
+
+<h1>🚨 Threat Intelligence Dashboard</h1>
+
+<form method="get">
+    <input type="text" name="q" placeholder="Search IOC..." />
+</form>
+
+<div class="container">
+
+    <!-- LEFT SIDE: TABLE -->
+    <div class="left">
+        <table>
+            <tr>
+                <th>Type</th>
+                <th>Value</th>
+            </tr>
+
+            {% for item in data %}
+            <tr>
+                <td class="{{ item.type }}">{{ item.type }}</td>
+                <td>{{ item.value }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- RIGHT SIDE: CHART -->
+    <div class="right">
+        <canvas id="chart"></canvas>
+    </div>
+
+</div>
+
+<script>
+    const ctx = document.getElementById('chart');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ labels | tojson }},
+            datasets: [{
+                label: 'Threat Count',
+                data: {{ values | tojson }},
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+</script>
+
+</body>
+</html>
