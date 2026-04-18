@@ -15,33 +15,33 @@ It collects cybersecurity data, detects suspicious indicators (IOCs), analyzes r
 ## 🎯 What Problem Does This Solve?
 
 Cybersecurity teams need to:
-- Monitor threats continuously
-- Detect malicious URLs & emails
-- Respond quickly to attacks
 
-This project automates that workflow.
+- Monitor threats continuously  
+- Detect malicious URLs & emails  
+- Respond quickly to attacks  
+
+👉 This project automates that workflow.
 
 ---
 
 ## 🔥 Key Features
 
-- 📡 Real-time threat feed collection
-- ☠️ Detection of malicious URLs
-- 📧 Email & URL IOC extraction
-- 🚨 Alert generation for high-risk threats
-- 🧠 AI-based risk scoring system
-- 🗄️ SQLite database storage
-- 🌐 Flask-based web dashboard
-- 📊 Live charts with auto-refresh
-- 🎨 Cybersecurity-style UI (animated)
+- 📡 Real-time threat feed collection  
+- ☠️ Detection of malicious URLs  
+- 📧 Email & URL IOC extraction  
+- 🚨 Alert generation for high-risk threats  
+- 🧠 AI-based risk scoring system  
+- 🗄️ SQLite database storage  
+- 🌐 Flask-based web dashboard  
+- 📊 Live charts with auto-refresh  
+- 🎨 Cybersecurity-style UI (animated)  
 
 ---
 
-## 🧠 How It Works (Simple Explanation)
+## 🧠 How It Works
 
 ```text
 Threat Feeds → IOC Detection → AI Analysis → Database → Dashboard
-
 Step-by-step:
 threat_intel.py
 Fetches threat news and malicious data
@@ -64,10 +64,6 @@ BeautifulSoup	Web scraping
 Requests	API calls
 Chart.js	Graphs & charts
 HTML/CSS	UI Design
-📸 Dashboard Preview
-
-(Add screenshot here later)
-
 ⚙️ Installation & Setup
 1️⃣ Clone Repository
 git clone https://github.com/ManikandanF1/dark-web-threat-intel-tool.git
@@ -113,14 +109,3 @@ If you found this project helpful:
 👉 Give it a ⭐ on GitHub
 👉 Share with others
 👉 Use it in your learning
-
-🚀 Final Note
-
-This project demonstrates:
-
-Real-time data processing
-Cybersecurity fundamentals
-Backend + frontend integration
-SOC workflow simulation
-
-💡 Built with passion for cybersecurity & learning
