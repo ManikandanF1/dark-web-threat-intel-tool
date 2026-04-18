@@ -1,7 +1,11 @@
 # 🛡️ Dark Web Threat Intelligence Dashboard
 
-> A Real-Time Cybersecurity Monitoring Tool for SOC (Security Operations Center)
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![Flask](https://img.shields.io/badge/Flask-Web%20Framework-green)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
+![Dashboard Preview](assets/dashboard.png)
+> A Real-Time Cyber Threat Intelligence Dashboard for SOC Operations
 ---
 
 ## 🌟 Overview
