@@ -1,182 +1,126 @@
-\# 🚨 Dark Web Threat Intelligence Tool
+# 🛡️ Dark Web Threat Intelligence Dashboard
 
+> A Real-Time Cybersecurity Monitoring Tool for SOC (Security Operations Center)
 
+---
 
-\## 📌 Overview
+## 🌟 Overview
 
-This project is a SOC-focused Threat Intelligence Tool that collects cybersecurity data from public sources, detects Indicators of Compromise (IOCs), and visualizes them through a web dashboard.
+This project is a **Cyber Threat Intelligence Dashboard** that simulates how real-world SOC teams monitor threats.
 
+It collects cybersecurity data, detects suspicious indicators (IOCs), analyzes risk, and displays everything in a **live dashboard with charts and alerts**.
 
+---
 
-It simulates a real-world Security Operations Center (SOC) workflow.
+## 🎯 What Problem Does This Solve?
 
+Cybersecurity teams need to:
+- Monitor threats continuously
+- Detect malicious URLs & emails
+- Respond quickly to attacks
 
+This project automates that workflow.
 
-\---
+---
 
+## 🔥 Key Features
 
+- 📡 Real-time threat feed collection
+- ☠️ Detection of malicious URLs
+- 📧 Email & URL IOC extraction
+- 🚨 Alert generation for high-risk threats
+- 🧠 AI-based risk scoring system
+- 🗄️ SQLite database storage
+- 🌐 Flask-based web dashboard
+- 📊 Live charts with auto-refresh
+- 🎨 Cybersecurity-style UI (animated)
 
-\## 🔍 Features
+---
 
-\- 📰 Fetches real-time cybersecurity news
+## 🧠 How It Works (Simple Explanation)
 
-\- ☠️ Collects malicious URLs (IOC feeds)
+```text
+Threat Feeds → IOC Detection → AI Analysis → Database → Dashboard
 
-\- 📧 Detects emails and URLs from text
+Step-by-step:
+threat_intel.py
+Fetches threat news and malicious data
+IOC Detection
+Extracts:
+URLs
+Emails
+AI Analysis
+Assigns risk score (LOW / MEDIUM / HIGH)
+Database
+Stores everything in SQLite
+app.py
+Displays data in dashboard
+🖥️ Tech Stack
+Technology	Purpose
+Python	Core logic
+Flask	Web dashboard
+SQLite	Database
+BeautifulSoup	Web scraping
+Requests	API calls
+Chart.js	Graphs & charts
+HTML/CSS	UI Design
+📸 Dashboard Preview
 
-\- 🚨 Generates alerts for suspicious activity
+(Add screenshot here later)
 
-\- 🤖 AI-based risk scoring
-
-\- 🗄️ Stores data using SQLite database
-
-\- 🌐 Web dashboard using Flask
-
-\- 📊 Visual charts and search functionality
-
-
-
-\---
-
-
-
-\## 🧠 Tech Stack
-
-\- Python
-
-\- Flask
-
-\- SQLite
-
-\- BeautifulSoup
-
-\- Requests
-
-\- HTML/CSS
-
-
-
-\---
-
-
-
-\## ⚙️ How It Works
-
-1\. `threat\_intel.py` collects threat data
-
-2\. Detects IOCs (URLs, emails)
-
-3\. Stores results in SQLite database
-
-4\. `app.py` reads data and displays it
-
-5\. Dashboard shows threats in real-time
-
-
-
-\---
-
-
-
-\## 🚀 How to Run
-
-
-
-\### Step 1: Install dependencies
-
-
-
+⚙️ Installation & Setup
+1️⃣ Clone Repository
+git clone https://github.com/ManikandanF1/dark-web-threat-intel-tool.git
+cd dark-web-threat-intel-tool
+2️⃣ Install Dependencies
 pip install flask requests beautifulsoup4 feedparser
-
-
-
-
-
-\### Step 2: Run threat collector
-
-
-
-python threat\_intel.py
-
-
-
-
-
-\### Step 3: Run dashboard (in new terminal)
-
-
-
+3️⃣ Run Threat Intelligence Tool
+python threat_intel.py
+4️⃣ Run Dashboard (New Terminal)
 python app.py
-
-
-
-
-
-\### Step 4: Open browser
-
-
-
+5️⃣ Open in Browser
 http://127.0.0.1:5000
+📊 Output
+Live threat dashboard
+IOC detection results
+Alerts for malicious activity
+Risk score visualization
+🎯 Use Cases
 
+✔ SOC Analyst practice
+✔ Cybersecurity learning
+✔ Threat monitoring simulation
+✔ Interview project
 
+🔐 Example Output
+🚨 ALERT: High-risk URL detected!
+📊 Risk Score: 6
+🚨 Threat Level: HIGH
+🔮 Future Improvements
+🔗 VirusTotal API integration
+🤖 Machine Learning anomaly detection
+🔐 Login system
+☁️ Cloud deployment (Render / AWS)
+📱 Telegram alerts
+👨‍💻 Author
 
+Manikandan G
 
+⭐ Support This Project
 
-\---
+If you found this project helpful:
 
+👉 Give it a ⭐ on GitHub
+👉 Share with others
+👉 Use it in your learning
 
+🚀 Final Note
 
-\## 📊 Output
+This project demonstrates:
 
-\- Threat Intelligence Dashboard
+Real-time data processing
+Cybersecurity fundamentals
+Backend + frontend integration
+SOC workflow simulation
 
-\- IOC detection results
-
-\- Alerts for malicious activity
-
-\- Risk scoring
-
-
-
-\---
-
-
-
-\## 🎯 Use Case
-
-This tool is useful for:
-
-\- SOC Analysts
-
-\- Cybersecurity monitoring
-
-\- Threat detection practice
-
-\- Learning real-world workflows
-
-
-
-\---
-
-
-
-\## 🔮 Future Improvements
-
-\- Integration with real threat feeds APIs
-
-\- Machine Learning-based threat detection
-
-\- User authentication system
-
-\- Cloud deployment
-
-
-
-\---
-
-
-
-\## 👨‍💻 Author
-
-\*\*Manikandan G\*\*
-
+💡 Built with passion for cybersecurity & learning
