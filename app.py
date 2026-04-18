@@ -1,34 +1,51 @@
-from flask import Flask, render_template, request
-from collections import Counter
-from database import fetch_data, init_db
+from flask import Flask, render_template, jsonify
+import sqlite3
 
 app = Flask(__name__)
 
-# VERY IMPORTANT
-init_db()
-
+def get_data():
+    conn = sqlite3.connect("threats.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT type, value FROM threats")
+    data = cursor.fetchall()
+    conn.close()
+    return data
 
 @app.route("/")
 def index():
-    query = request.args.get("q", "").lower()
+    data = get_data()
 
-    data = fetch_data()
+    counts = {
+        "alert": 0,
+        "email": 0,
+        "malicious_url": 0,
+        "news": 0,
+        "url": 0
+    }
 
-    # Filter search
-    if query:
-        data = [d for d in data if query in d["value"].lower()]
+    for row in data:
+        if row[0] in counts:
+            counts[row[0]] += 1
 
-    # Chart data
-    types = [d["type"] for d in data]
-    count = Counter(types)
+    return render_template("index.html", data=data, counts=counts)
 
-    return render_template(
-        "index.html",
-        data=data,
-        labels=list(count.keys()),
-        values=list(count.values())
-    )
+@app.route("/api/data")
+def api_data():
+    data = get_data()
 
+    counts = {
+        "alert": 0,
+        "email": 0,
+        "malicious_url": 0,
+        "news": 0,
+        "url": 0
+    }
+
+    for row in data:
+        if row[0] in counts:
+            counts[row[0]] += 1
+
+    return jsonify({"data": data, "counts": counts})
 
 if __name__ == "__main__":
     app.run(debug=True)

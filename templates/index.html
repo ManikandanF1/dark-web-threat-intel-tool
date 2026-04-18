@@ -1,132 +1,177 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Threat Intelligence Dashboard</title>
+    <title>Cyber Threat Monitor</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         body {
-            font-family: Arial;
-            background-color: #0f172a;
-            color: white;
-            padding: 20px;
+            background: #020d1f;
+            color: #00fff7;
+            font-family: 'Courier New', monospace;
+            margin: 0;
         }
 
         h1 {
-            color: #38bdf8;
+            text-align: center;
+            padding: 20px;
+            text-shadow: 0 0 15px cyan;
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px cyan; }
+            to { text-shadow: 0 0 25px #00fff7; }
         }
 
         .container {
             display: flex;
-            gap: 20px;
+            padding: 20px;
         }
 
         .left {
-            flex: 2;
+            width: 70%;
         }
 
         .right {
-            flex: 1;
+            width: 30%;
+            padding-left: 20px;
         }
 
         canvas {
-            background: #1e293b;
+            background: rgba(0,255,255,0.05);
+            border: 1px solid cyan;
             padding: 10px;
-            border-radius: 10px;
-            max-height: 300px;
+        }
+
+        .box {
+            border: 1px solid cyan;
+            margin: 10px 0;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 10px cyan;
+            transition: 0.3s;
+        }
+
+        .box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px cyan;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
             margin-top: 20px;
+            border-collapse: collapse;
         }
 
-        th, td {
+        td, th {
+            border-bottom: 1px solid cyan;
             padding: 10px;
-            border-bottom: 1px solid #334155;
-        }
-
-        th {
-            background-color: #1e293b;
         }
 
         tr:hover {
-            background-color: #1e293b;
+            background: rgba(0,255,255,0.1);
         }
-
-        input {
-            padding: 10px;
-            width: 300px;
-            border-radius: 5px;
-            border: none;
-        }
-
-        .alert { color: red; font-weight: bold; }
-        .malicious_url { color: orange; }
-        .email { color: lightgreen; }
-
     </style>
-
-    <script>
-        setTimeout(() => {
-            location.reload();
-        }, 10000);
-    </script>
-
 </head>
+
 <body>
 
-<h1>🚨 Threat Intelligence Dashboard</h1>
-
-<form method="get">
-    <input type="text" name="q" placeholder="Search IOC..." />
-</form>
+<h1>🛡 CYBER THREAT MONITOR</h1>
 
 <div class="container">
 
-    <!-- LEFT SIDE: TABLE -->
     <div class="left">
+        <canvas id="chart"></canvas>
+
         <table>
             <tr>
                 <th>Type</th>
                 <th>Value</th>
             </tr>
-
-            {% for item in data %}
-            <tr>
-                <td class="{{ item.type }}">{{ item.type }}</td>
-                <td>{{ item.value }}</td>
-            </tr>
-            {% endfor %}
+            <tbody id="tableBody"></tbody>
         </table>
     </div>
 
-    <!-- RIGHT SIDE: CHART -->
     <div class="right">
-        <canvas id="chart"></canvas>
+        <div class="box" id="alert"></div>
+        <div class="box" id="email"></div>
+        <div class="box" id="malicious_url"></div>
+        <div class="box" id="news"></div>
+        <div class="box" id="url"></div>
     </div>
 
 </div>
 
 <script>
-    const ctx = document.getElementById('chart');
+let chart;
 
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: {{ labels | tojson }},
-            datasets: [{
-                label: 'Threat Count',
-                data: {{ values | tojson }},
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
+function loadData() {
+    fetch("/api/data")
+    .then(res => res.json())
+    .then(res => {
+
+        let counts = res.counts;
+        let data = res.data;
+
+        // Update Stats
+        for (let key in counts) {
+            document.getElementById(key).innerHTML =
+                `<h2>${counts[key]}</h2><p>${key}</p>`;
         }
+
+        // Update Table
+        let table = "";
+        data.slice(-20).reverse().forEach(row => {
+            table += `<tr><td>${row[0]}</td><td>${row[1]}</td></tr>`;
+        });
+        document.getElementById("tableBody").innerHTML = table;
+
+        // Chart Data
+        let labels = Object.keys(counts);
+        let values = Object.values(counts);
+
+        if (chart) chart.destroy();
+
+        chart = new Chart(document.getElementById("chart"), {
+            type: "bar",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Threat Count",
+                    data: values,
+                    backgroundColor: [
+                        "#00fff7",
+                        "#ff00ff",
+                        "#ff3c00",
+                        "#00ff88",
+                        "#8a7cff"
+                    ]
+                }]
+            },
+            options: {
+                animation: {
+                    duration: 1000
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: "cyan" }
+                    }
+                },
+                scales: {
+                    x: { ticks: { color: "cyan" } },
+                    y: { ticks: { color: "cyan" } }
+                }
+            }
+        });
     });
+}
+
+// 🔁 AUTO REFRESH EVERY 5 SECONDS
+setInterval(loadData, 5000);
+
+// Initial load
+loadData();
 </script>
 
 </body>

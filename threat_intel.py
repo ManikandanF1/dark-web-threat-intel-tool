@@ -2,66 +2,66 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import time
-from datetime import datetime
-
-# ✅ Database import
+import datetime
+import logging
 from database import init_db, insert_data
 
-# ✅ Initialize DB
+# Initialize DB
 init_db()
 
+# Logging setup
+logging.basicConfig(filename="soc.log", level=logging.INFO)
 
-# ==============================
-# 🔍 Fetch Threat News
-# ==============================
-def fetch_threat_news():
+# -------------------------------
+# Fetch News
+# -------------------------------
+def fetch_news():
     print("\n🌐 Fetching Threat Intelligence Feeds...\n")
-
     url = "https://thehackernews.com/"
 
     try:
-        response = requests.get(url, timeout=10)
+        response = requests.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
 
         articles = soup.find_all("a", class_="story-link")
 
         for article in articles[:5]:
-            title = article.get_text(strip=True)
+            title = article.text.strip()
             link = article.get("href")
 
             print(f"📰 {title}")
             print(f"🔗 {link}\n")
 
-            # ✅ Save to DB
             insert_data("news", title)
 
-    except Exception as e:
-        print("❌ Error fetching news:", e)
+    except:
+        print("Error fetching news")
 
 
-# ==============================
-# ☠️ Fetch Malicious IOCs
-# ==============================
+# -------------------------------
+# Fetch Malicious URLs
+# -------------------------------
 def fetch_malicious_iocs():
     print("\n☠️ Fetching Known Malicious IOCs...\n")
 
-    # Sample malicious URLs (simulate threat feed)
-    malicious_list = [
-        "http://malicious-site.com",
-        "http://phishing-login.net",
-        "http://badserver.xyz/malware",
-    ]
+    url = "https://urlhaus.abuse.ch/downloads/text/"
 
-    for url in malicious_list:
-        print(f"⚠️ Malicious URL: {url}")
+    try:
+        response = requests.get(url)
+        lines = response.text.splitlines()
 
-        # ✅ Save to DB
-        insert_data("malicious_url", url)
+        for line in lines[:5]:
+            if line.startswith("http"):
+                print(f"⚠️ Malicious URL: {line}")
+                insert_data("malicious_url", line)
+
+    except:
+        print("Error fetching IOCs")
 
 
-# ==============================
-# 🧠 IOC Detection
-# ==============================
+# -------------------------------
+# IOC Detection
+# -------------------------------
 def detect_iocs(text):
     print("\n🧠 Running IOC Detection...\n")
 
@@ -81,59 +81,98 @@ def detect_iocs(text):
             insert_data("alert", url)
 
 
-# ==============================
-# 🤖 Simple AI Analysis
-# ==============================
+# -------------------------------
+# IOC ENRICHMENT (NEW)
+# -------------------------------
+def enrich_ip(ip):
+    try:
+        url = f"http://ip-api.com/json/{ip}"
+        response = requests.get(url).json()
+
+        country = response.get("country", "Unknown")
+        isp = response.get("isp", "Unknown")
+
+        return f"{ip} | {country} | {isp}"
+
+    except:
+        return f"{ip} | enrichment failed"
+
+
+def extract_ip(url):
+    match = re.findall(r"\d+\.\d+\.\d+\.\d+", url)
+    return match[0] if match else None
+
+
+# -------------------------------
+# ADVANCED THREAT SCORING
+# -------------------------------
+def threat_score(text):
+    score = 0
+
+    if "malicious" in text:
+        score += 5
+    if "http" in text:
+        score += 2
+    if "@" in text:
+        score += 2
+    if re.search(r"\d+\.\d+\.\d+\.\d+", text):
+        score += 4
+
+    return score
+
+
+def classify_threat(score):
+    if score >= 7:
+        return "HIGH"
+    elif score >= 4:
+        return "MEDIUM"
+    else:
+        return "LOW"
+
+
+# -------------------------------
+# AI ANALYSIS (UPDATED)
+# -------------------------------
 def ai_analyze(text):
     print("\n🤖 AI Threat Analysis...\n")
 
-    risk_score = 0
+    score = threat_score(text)
+    level = classify_threat(score)
 
-    if "malicious" in text:
-        risk_score += 3
-    if "phishing" in text:
-        risk_score += 2
-    if "admin" in text:
-        risk_score += 1
+    print(f"📊 Risk Score: {score}")
+    print(f"🚨 Threat Level: {level}")
 
-    print(f"📊 Risk Score: {risk_score}")
-
-    if risk_score >= 5:
-        print("🚨 Threat Level: HIGH")
-    elif risk_score >= 3:
-        print("⚠️ Threat Level: MEDIUM")
-    else:
-        print("✅ Threat Level: LOW")
+    insert_data("risk_score", str(score))
+    insert_data("threat_level", level)
 
 
-# ==============================
-# 🚀 Main Tool Runner
-# ==============================
+# -------------------------------
+# MAIN TOOL
+# -------------------------------
 def run_tool():
     print("\n🚨 Dark Web Threat Intelligence Tool 🚨")
-    print(f"🕒 {datetime.now()}")
+    print(f"🕒 {datetime.datetime.now()}")
 
-    # Step 1: News
-    fetch_threat_news()
-
-    # Step 2: Malicious IOCs
+    fetch_news()
     fetch_malicious_iocs()
 
-    # Step 3: Sample Text Analysis
-    sample_text = """
-    Contact admin@test.com immediately.
-    Visit http://malicious-site.com for details.
-    """
+    sample_text = "Contact admin@test.com or visit http://malicious-site.com or 8.8.8.8"
 
     detect_iocs(sample_text)
 
-    # Step 4: AI Analysis
+    # Enrichment example
+    ip = extract_ip(sample_text)
+    if ip:
+        enriched = enrich_ip(ip)
+        print(f"🌍 Enriched IP: {enriched}")
+        insert_data("ip_info", enriched)
+
     ai_analyze(sample_text)
 
 
-# ==============================
-# 🔁 Continuous Run
-# ==============================
+# -------------------------------
+# LOOP
+# -------------------------------
 if __name__ == "__main__":
     try:
         while True:
