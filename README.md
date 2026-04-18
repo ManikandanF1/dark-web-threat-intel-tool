@@ -5,6 +5,7 @@
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ![Dashboard Preview](assets/dashboard.png)
+
 > A Real-Time Cyber Threat Intelligence Dashboard for SOC Operations
 ---
 
